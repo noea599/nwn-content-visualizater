@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NWN Content Visualizer | Navigating With Noel</title>
+    <meta name="description" content="Create beautiful visuals, infographics, and animations for NWN content. Copy-paste prompts for social media graphics.">
+    <style>
+        :root {
+            --primary: #9B59B6;
+            --primary-dark: #7D3C98;
+            --gold: #F39C12;
+            --dark: #1a1a2e;
+            --darker: #16213e;
+            --light: #f8fafc;
+            --gray: #94a3b8;
+            --card-bg: rgba(255,255,255,0.05);
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, var(--dark) 0%, var(--darker) 100%);
+            color: #e2e8f0;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+        
+        /* Navigation */
+        .nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(26, 26, 46, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .nav-brand {
+            font-weight: 700;
+            font-size: 18px;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 25px;
+            list-style: none;
+        }
+        
+        .nav-links a {
+            color: var(--gray);
+            text-decoration: none;
+            font-size: 14px;
+            transition: color 0.3s;
+        }
+        
+        .nav-links a:hover { color: var(--primary); }
+        
+        /* Hero */
+        .hero {
+            padding: 120px 30px 60px;
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .hero-badge {
+            display: inline-block;
+            background: rgba(155, 89, 182, 0.2);
+            color: var(--primary);
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            letter-spacing: 1px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(155, 89, 182, 0.3);
+        }
+        
+        .hero h1 {
+            font-size: 42px;
+            font-weight: 800;
+            margin-bottom: 15px;
+            background: linear-gradient(90deg, var(--primary), #E74C3C, var(--gold));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .hero p {
+            font-size: 18px;
+            color: var(--gray);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        /* Main Content */
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 30px 60px;
+        }
+        
+        /* Section Styles */
+        section {
+            margin-bottom: 50px;
+        }
+        
+        .section-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--primary);
+            display: inline-block;
+        }
+        
+        /* Quick Start Cards */
+        .quick-start {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin: 30px 0;
+        }
+        
+        .qs-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .qs-number {
+            width: 36px;
+            height: 36px;
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            margin: 0 auto 12px;
+        }
+        
+        .qs-card h4 {
+            font-size: 14px;
+            margin-bottom: 6px;
+        }
+        
+        .qs-card p {
+            font-size: 12px;
+            color: var(--gray);
+        }
+        
+        /* Prompt Cards */
+        .prompt-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 25px;
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .prompt-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 40px rgba(155, 89, 182, 0.2);
+        }
+        
+        .prompt-card h3 {
+            font-size: 18px;
+            margin-bottom: 10px;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .prompt-card > p {
+            font-size: 14px;
+            color: var(--gray);
+            margin-bottom: 15px;
+        }
+        
+        /* Code Blocks */
+        .prompt-block {
+            background: rgba(0,0,0,0.4);
+            border-radius: 10px;
+            padding: 20px;
+            position: relative;
+            border: 1px solid rgba(155, 89, 182, 0.2);
+        }
+        
+        .prompt-block pre {
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 13px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            color: #e2e8f0;
+            line-height: 1.5;
+        }
+        
+        .copy-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: background 0.3s;
+            font-weight: 600;
+        }
+        
+        .copy-btn:hover { background: var(--primary-dark); }
+        .copy-btn.copied { background: #27AE60; }
+        
+        /* Brand Guide */
+        .brand-guide {
+            background: rgba(155, 89, 182, 0.1);
+            border-radius: 16px;
+            padding: 25px;
+            border: 1px solid rgba(155, 89, 182, 0.3);
+            margin-top: 40px;
+        }
+        
+        .brand-guide h3 {
+            color: var(--primary);
+            margin-bottom: 20px;
+            font-size: 18px;
+        }
+        
+        .brand-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+        }
+        
+        .brand-item strong {
+            color: var(--gold);
+            font-size: 13px;
+        }
+        
+        .brand-item p {
+            font-size: 12px;
+            color: var(--gray);
+            margin-top: 5px;
+        }
+        
+        /* Size Guide */
+        .size-guide {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 12px;
+            margin: 20px 0;
+        }
+        
+        .size-card {
+            background: var(--card-bg);
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .size-card strong {
+            color: var(--primary);
+            font-size: 13px;
+        }
+        
+        .size-card p {
+            font-size: 11px;
+            color: var(--gray);
+            margin-top: 5px;
+        }
+        
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 40px 30px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            margin-top: 40px;
+        }
+        
+        .footer p {
+            color: var(--gray);
+            font-size: 14px;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .hero h1 { font-size: 32px; }
+            .hero { padding: 100px 20px 40px; }
+            .container { padding: 0 20px 40px; }
+            .quick-start { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="nav-brand">🧭 NWN Content Visualizer</div>
+        <ul class="nav-links">
+            <li><a href="#prompts">Prompts</a></li>
+            <li><a href="#sizes">Sizes</a></li>
+            <li><a href="#brand">Brand Guide</a></li>
+        </ul>
+    </nav>
+
+    <!-- Hero -->
+    <header class="hero">
+        <span class="hero-badge">NAVIGATING WITH NOEL</span>
+        <h1>Content Visualizer</h1>
+        <p>Create beautiful graphics, infographics, and animations for your posts. Just copy, paste, and customize.</p>
+    </header>
+
+    <main class="container">
+        <!-- Quick Start -->
+        <section>
+            <h2 class="section-title">⚡ Quick Start</h2>
+            <div class="quick-start">
+                <div class="qs-card">
+                    <div class="qs-number">1</div>
+                    <h4>Find a Prompt</h4>
+                    <p>Scroll down and pick one</p>
+                </div>
+                <div class="qs-card">
+                    <div class="qs-number">2</div>
+                    <h4>Click Copy</h4>
+                    <p>Purple button copies it</p>
+                </div>
+                <div class="qs-card">
+                    <div class="qs-number">3</div>
+                    <h4>Paste & Create</h4>
+                    <p>Use Gemini, ChatGPT, or Canva AI</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Prompts Section -->
+        <section id="prompts">
+            <h2 class="section-title">📋 Copy-Paste Prompts</h2>
+
+            <!-- Quote Graphics -->
+            <div class="prompt-card">
+                <h3>📸 Motivational Quote Graphic</h3>
+                <p>Turn any quote into a shareable Instagram post</p>
+                <div class="prompt-block">
+                    <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+                    <pre>Create a motivational quote graphic for social media.
+
+Quote: "[YOUR QUOTE HERE]"
+Attribution: "— Navigating With Noel"
+
+Style: Modern, clean, inspirational
+Layout: Square (1:1) for Instagram feed
+Elements:
+- Bold, readable typography for the quote
+- Subtle gradient background (deep purple to navy blue)
+- Compass or navigation icon subtly incorporated
+- Clean white or gold accent text
+- Space at bottom for NWN branding
+
+Mood: Empowering, hopeful, action-oriented
+Audience: Young professionals ages 18-30</pre>
+                </div>
+            </div>
+
+            <!-- Framework Infographic -->
+            <div class="prompt-card">
+                <h3>📊 Framework/Principle Infographic</h3>
+                <p>Explain a concept in a carousel or single image</p>
+                <div class="prompt-block">
+                    <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+                    <pre>Create an infographic explaining [PRINCIPLE/FRAMEWORK].
+
+Title: "[TITLE]"
+Key Points:
+1. [Point 1]
+2. [Point 2]
+3. [Point 3]
+4. [Point 4]
+5. [Point 5]
+
+Style: Clean, modern, youth-friendly
+Layout: Vertical carousel slides (1080x1350) or single 9:16
+Color Palette: Deep purple, navy blue, white, gold accents
+Elements:
+- Numbered steps with icons
+- Simple illustrations for each point
+- Progress pathway visual (journey metaphor)
+- NWN compass logo watermark
+- Swipe indicator for carousels
+
+Typography: Bold headers, readable body text
+Tone: Encouraging, practical, actionable</pre>
+                </div>
+            </div>
+
+            <!-- Goal Setting -->
+            <div class="prompt-card">
+                <h3>🎯 Goal-Setting Visual</h3>
+                <p>Progress trackers and milestone visuals</p>
+                <div class="prompt-block">
+                    <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+                    <pre>Create a goal-setting visual for [TOPIC: career/education/personal growth].
+
+Theme: [e.g., "90-Day Challenge", "Weekly Wins", "Level Up"]
+Structure:
+- Clear milestone markers
+- Progress tracker visual
+- Celebration points highlighted
+- Space for personal reflection
+
+Style: Gamified, achievement-based aesthetic
+Colors: Purple gradient with gold achievement badges
+Elements:
+- Mountain/journey metaphor OR level-up gaming style
+- Checkpoint flags or badges
+- "You Are Here" marker
+- Destination/goal visualization
+
+Format: Instagram Story (9:16) or carousel
+Tone: Motivating without being preachy</pre>
+                </div>
+            </div>
+
+            <!-- Networking Tips -->
+            <div class="prompt-card">
+                <h3>🤝 Networking Tips Carousel</h3>
+                <p>Professional advice in swipeable format</p>
+                <div class="prompt-block">
+                    <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+                    <pre>Create a networking tips graphic for young professionals.
+
+Topic: "[SPECIFIC TIP: e.g., How to Follow Up After a Conference]"
+Key Steps:
+1. [Step 1]
+2. [Step 2]
+3. [Step 3]
+
+Style: Professional but approachable
+Layout: Carousel format (3-5 slides)
+Elements:
+- Slide 1: Hook/problem statement with bold text
+- Slides 2-4: One tip per slide with illustration
+- Final slide: CTA + NWN branding
+
+Visuals: 
+- Diverse young professionals illustrated
+- Connection/network node imagery
+- Handshake or conversation icons
+
+Colors: Navy, purple, white, subtle gold
+Format: 1080x1350 (Instagram carousel)</pre>
+                </div>
+            </div>
+
+            <!-- Did You Know -->
+            <div class="prompt-card">
+                <h3>💡 "Did You Know" Post</h3>
+                <p>Eye-catching facts and insights</p>
+                <div class="prompt-block">
+                    <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+                    <pre>Create a "Did You Know" educational graphic.
+
+Fact/Insight: "[YOUR FACT OR STATISTIC]"
+Context: [Brief explanation of why this matters]
+Action Step: [What the reader should do with this info]
+
+Style: Eye-catching, shareable, informative
+Layout: Single image or 2-slide carousel
+Elements:
+- Large "Did You Know?" or "💡" header
+- Bold statistic or fact highlighted
+- Supporting visual/icon
+- Source citation (small, bottom)
+- "Save this!" or "Share with a friend" CTA
+
+Colors: High contrast - dark background with bright text
+Format: Square (1:1) for maximum reach
+Tone: Surprising, valuable, conversation-starting</pre>
+                </div>
+            </div>
+
+            <!-- Success Story -->
+            <div class="prompt-card">
+                <h3>🏆 Success Story Highlight</h3>
+                <p>Feature community wins and testimonials</p>
+                <div class="prompt-block">
+                    <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+                    <pre>Create a success story highlight graphic.
+
+Person: [Name or "NWN Community Member"]
+Achievement: [What they accomplished]
+Journey: [Brief before → after]
+Key Lesson: [Takeaway for the audience]
+
+Style: Testimonial/feature style
+Layout: Instagram Story or carousel
+Elements:
+- Photo placeholder (silhouette if no photo)
+- Quote from the person
+- Before/after or journey timeline
+- Achievement badge or celebration graphic
+- "This could be you" inspiration CTA
+
+Colors: Warm, celebratory - gold accents prominent
+Format: 9:16 (Story) or 1080x1350 (Feed)
+Tone: Celebratory, relatable, inspiring</pre>
+                </div>
+            </div>
+
+            <!-- Event Promo -->
+            <div class="prompt-card">
+                <h3>📅 Event/Workshop Promo</h3>
+                <p>Flyers for NWN sessions and events</p>
+                <div class="prompt-block">
+                    <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+                    <pre>Create an event promotional graphic.
+
+Event: [EVENT NAME]
+Date: [DATE & TIME]
+Topic: [WHAT ATTENDEES WILL LEARN]
+Host: Navigating With Noel
+
+Style: Professional event flyer, digital-first
+Layout: Square (feed) + Story version (9:16)
+Elements:
+- Bold event title
+- Date/time prominently displayed
+- 3 key takeaways or benefits (bullet points)
+- Speaker/host photo placeholder
+- "Register Now" or "Save Your Spot" CTA
+- NWN branding + compass logo
+
+Colors: NWN purple/navy with urgency accent (orange or gold)
+Mood: Exciting, valuable, don't-miss-this</pre>
+                </div>
+            </div>
+
+            <!-- Learning Animation -->
+            <div class="prompt-card">
+                <h3>🎬 Learning Journey Animation</h3>
+                <p>Animated video for Reels/TikTok</p>
+                <div class="prompt-block">
+                    <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+                    <pre>Create an animated learning journey for [TOPIC/SKILL].
+
+Concept: From [STARTING POINT] to [END GOAL]
+
+Animation Sequence:
+1. Starting point - show the challenge/gap
+2. First step - initial learning/action
+3. Growth moment - skills developing
+4. Obstacle - setback or challenge
+5. Breakthrough - overcoming with support
+6. Achievement - reaching the goal
+
+Style: 
+- Smooth 2D animation
+- Character going on journey (diverse representation)
+- Path/road metaphor with milestones
+- Encouraging visual progression
+
+Duration: 15-30 seconds
+Loop: Yes, seamless
+Colors: Purple/navy palette with warm highlights
+
+Format: Instagram Reel / TikTok (9:16)</pre>
+                </div>
+            </div>
+
+            <!-- Text to Reel -->
+            <div class="prompt-card">
+                <h3>🎥 Turn Text Post into Video Concept</h3>
+                <p>Convert your written posts into Reel storyboards</p>
+                <div class="prompt-block">
+                    <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+                    <pre>Create a video concept for this post:
+
+Original Text: "[PASTE YOUR TEXT POST HERE]"
+
+Convert to visual sequence:
+1. Hook (0-3 sec): [Attention-grabbing visual/text]
+2. Problem (3-7 sec): [Relatable struggle visualization]  
+3. Solution (7-15 sec): [Your advice animated]
+4. Proof (15-20 sec): [Example or result shown]
+5. CTA (20-25 sec): [Follow/save/share prompt]
+
+Style: Fast-paced, text-on-screen, b-roll suggestions
+Transitions: Smooth zooms, cuts on beat
+Text Animation: Pop-in, typewriter, or slide
+Music Mood: [Motivational/Chill/Energetic]
+
+Output: Shot-by-shot storyboard with:
+- Visual description for each scene
+- On-screen text
+- Timing
+- Suggested stock footage or animation style</pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- Size Guide -->
+        <section id="sizes">
+            <h2 class="section-title">📐 Size Guide</h2>
+            <div class="size-guide">
+                <div class="size-card">
+                    <strong>Instagram Feed</strong>
+                    <p>1080 × 1080<br>(square)</p>
+                </div>
+                <div class="size-card">
+                    <strong>Instagram Carousel</strong>
+                    <p>1080 × 1350<br>(portrait)</p>
+                </div>
+                <div class="size-card">
+                    <strong>Stories / Reels</strong>
+                    <p>1080 × 1920<br>(9:16)</p>
+                </div>
+                <div class="size-card">
+                    <strong>TikTok</strong>
+                    <p>1080 × 1920<br>(9:16)</p>
+                </div>
+                <div class="size-card">
+                    <strong>LinkedIn</strong>
+                    <p>1200 × 627<br>(landscape)</p>
+                </div>
+                <div class="size-card">
+                    <strong>Twitter/X</strong>
+                    <p>1200 × 675<br>(16:9)</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Brand Guide -->
+        <section id="brand">
+            <div class="brand-guide">
+                <h3>🧭 NWN Brand Style Guide</h3>
+                <div class="brand-grid">
+                    <div class="brand-item">
+                        <strong>Primary Colors</strong>
+                        <p>Deep Purple #9B59B6<br>Navy Blue #1a1a2e<br>Gold Accent #F39C12</p>
+                    </div>
+                    <div class="brand-item">
+                        <strong>Typography</strong>
+                        <p>Headers: Bold Sans-Serif<br>Body: Clean, readable<br>Quotes: Italic accent</p>
+                    </div>
+                    <div class="brand-item">
+                        <strong>Imagery</strong>
+                        <p>Compass motifs<br>Journey/path metaphors<br>Diverse young professionals</p>
+                    </div>
+                    <div class="brand-item">
+                        <strong>Tone</strong>
+                        <p>Empowering, not preachy<br>Practical & actionable<br>Peer-to-peer feel</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>🧭 <strong>Navigating With Noel</strong></p>
+        <p style="margin-top: 8px; font-size: 12px;">Learning • Networking • Accountability</p>
+    </footer>
+
+    <script>
+        function copyPrompt(btn) {
+            const pre = btn.parentElement.querySelector('pre');
+            navigator.clipboard.writeText(pre.textContent).then(() => {
+                btn.textContent = '✓ Copied!';
+                btn.classList.add('copied');
+                setTimeout(() => {
+                    btn.textContent = 'Copy';
+                    btn.classList.remove('copied');
+                }, 2000);
+            });
+        }
+
+        // Smooth scroll
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const target = document.querySelector(link.getAttribute('href'));
+                target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            });
+        });
+    </script>
+</body>
+</html>
